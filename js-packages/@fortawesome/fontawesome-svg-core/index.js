@@ -1744,8 +1744,7 @@
   };
 
   var styles$2 = namespace.styles;
-  function asFoundIcon(icon, primary='currentColor', secondary='currentColor') {
-    console.log(icon);
+  function asFoundIcon(icon, duotoneFillNative = {}) {
     var width = icon[0];
     var height = icon[1];
 
@@ -1765,14 +1764,14 @@
           tag: 'path',
           attributes: {
             class: "".concat(config.familyPrefix, "-").concat(DUOTONE_CLASSES.SECONDARY),
-            fill: secondary,
+            fill: duotoneFillNative.secondary | 'currentColor',
             d: vectorData[0]
           }
         }, {
           tag: 'path',
           attributes: {
             class: "".concat(config.familyPrefix, "-").concat(DUOTONE_CLASSES.PRIMARY),
-            fill: primary,
+            fill: duotoneFillNative.primary | 'currentColor',
             d: vectorData[1]
           }
         }]
@@ -1794,7 +1793,7 @@
       icon: element
     };
   }
-  function findIcon(iconName, prefix, primary=undefined, secondary=undefined) {
+  function findIcon(iconName, prefix, duotoneFillNative={}) {
     return new picked(function (resolve, reject) {
       var val = {
         found: false,
@@ -1805,7 +1804,7 @@
 
       if (iconName && prefix && styles$2[prefix] && styles$2[prefix][iconName]) {
         var icon = styles$2[prefix][iconName];
-        return resolve(asFoundIcon(icon, primary, secondary));
+        return resolve(asFoundIcon(icon, duotoneFillNative));
       }
 
       var headers = {};
@@ -2185,8 +2184,7 @@
         iconName = iconLookup.iconName;
     if (!iconName) return;
     var iconmapping =  iconFromMapping(library.definitions, prefix, iconName) || iconFromMapping(namespace.styles, prefix, iconName);
-    iconmapping.primary = iconLookup['primary'] ? iconLookup.primary : 'currentColor';
-    iconmapping.secondary = iconLookup['secondary'] ? iconLookup.secondary : 'currentColor';
+    iconmapping.duotoneFillNative = iconLookup.duotoneFillNative || {};
     return iconmapping;
   }
 
@@ -2295,8 +2293,7 @@
     var prefix = iconDefinition.prefix,
         iconName = iconDefinition.iconName,
         icon = iconDefinition.icon,
-    primary=iconDefinition.primary,
-    secondary=iconDefinition.secondary;
+        duotoneFillNative=iconDefinition.duotoneFillNative;
     return apiObject(_objectSpread({
       type: 'icon'
     }, iconDefinition), function () {
@@ -2313,7 +2310,7 @@
 
       return makeInlineSvgAbstract({
         icons: {
-          main: asFoundIcon(icon, primary, secondary),
+          main: asFoundIcon(icon, duotoneFillNative),
           mask: mask ? asFoundIcon(mask.icon) : {
             found: false,
             width: null,
