@@ -1744,7 +1744,8 @@
   };
 
   var styles$2 = namespace.styles;
-  function asFoundIcon(icon) {
+  function asFoundIcon(icon, primary='currentColor', secondary='currentColor') {
+    console.log(icon);
     var width = icon[0];
     var height = icon[1];
 
@@ -1764,14 +1765,14 @@
           tag: 'path',
           attributes: {
             class: "".concat(config.familyPrefix, "-").concat(DUOTONE_CLASSES.SECONDARY),
-            fill: 'currentColor',
+            fill: secondary,
             d: vectorData[0]
           }
         }, {
           tag: 'path',
           attributes: {
             class: "".concat(config.familyPrefix, "-").concat(DUOTONE_CLASSES.PRIMARY),
-            fill: 'currentColor',
+            fill: primary,
             d: vectorData[1]
           }
         }]
@@ -1793,7 +1794,7 @@
       icon: element
     };
   }
-  function findIcon(iconName, prefix) {
+  function findIcon(iconName, prefix, primary=undefined, secondary=undefined) {
     return new picked(function (resolve, reject) {
       var val = {
         found: false,
@@ -1804,7 +1805,7 @@
 
       if (iconName && prefix && styles$2[prefix] && styles$2[prefix][iconName]) {
         var icon = styles$2[prefix][iconName];
-        return resolve(asFoundIcon(icon));
+        return resolve(asFoundIcon(icon, primary, secondary));
       }
 
       var headers = {};
@@ -2183,7 +2184,10 @@
         prefix = _iconLookup$prefix === void 0 ? 'fa' : _iconLookup$prefix,
         iconName = iconLookup.iconName;
     if (!iconName) return;
-    return iconFromMapping(library.definitions, prefix, iconName) || iconFromMapping(namespace.styles, prefix, iconName);
+    var iconmapping =  iconFromMapping(library.definitions, prefix, iconName) || iconFromMapping(namespace.styles, prefix, iconName);
+    iconmapping.primary = iconLookup['primary'] ? iconLookup.primary : 'currentColor';
+    iconmapping.secondary = iconLookup['secondary'] ? iconLookup.secondary : 'currentColor';
+    return iconmapping;
   }
 
   function resolveIcons(next) {
@@ -2286,9 +2290,13 @@
         _params$styles = params.styles,
         styles = _params$styles === void 0 ? {} : _params$styles;
     if (!iconDefinition) return;
+    console.log('definition');
+    console.log(iconDefinition);
     var prefix = iconDefinition.prefix,
         iconName = iconDefinition.iconName,
-        icon = iconDefinition.icon;
+        icon = iconDefinition.icon,
+    primary=iconDefinition.primary,
+    secondary=iconDefinition.secondary;
     return apiObject(_objectSpread({
       type: 'icon'
     }, iconDefinition), function () {
@@ -2305,7 +2313,7 @@
 
       return makeInlineSvgAbstract({
         icons: {
-          main: asFoundIcon(icon),
+          main: asFoundIcon(icon, primary, secondary),
           mask: mask ? asFoundIcon(mask.icon) : {
             found: false,
             width: null,
