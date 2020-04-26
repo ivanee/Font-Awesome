@@ -1764,14 +1764,14 @@
           tag: 'path',
           attributes: {
             class: "".concat(config.familyPrefix, "-").concat(DUOTONE_CLASSES.SECONDARY),
-            fill: duotoneFillNative.secondary | 'currentColor',
+            fill: duotoneFillNative.secondary || 'currentColor',
             d: vectorData[0]
           }
         }, {
           tag: 'path',
           attributes: {
             class: "".concat(config.familyPrefix, "-").concat(DUOTONE_CLASSES.PRIMARY),
-            fill: duotoneFillNative.primary | 'currentColor',
+            fill: duotoneFillNative.primary || 'currentColor',
             d: vectorData[1]
           }
         }]
@@ -2184,7 +2184,7 @@
         iconName = iconLookup.iconName;
     if (!iconName) return;
     var iconmapping =  iconFromMapping(library.definitions, prefix, iconName) || iconFromMapping(namespace.styles, prefix, iconName);
-    iconmapping.duotoneFillNative = iconLookup.duotoneFillNative || {};
+    iconmapping.duotoneFillNative = iconLookup.duotoneFillNative;
     return iconmapping;
   }
 
@@ -2311,7 +2311,7 @@
       return makeInlineSvgAbstract({
         icons: {
           main: asFoundIcon(icon, duotoneFillNative),
-          mask: mask ? asFoundIcon(mask.icon) : {
+          mask: mask ? asFoundIcon(mask.icon, duotoneFillNative) : {
             found: false,
             width: null,
             height: null,
